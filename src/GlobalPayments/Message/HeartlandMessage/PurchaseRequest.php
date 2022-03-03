@@ -10,12 +10,18 @@ class PurchaseRequest extends AbstractHeartlandRequest
 
         $chargeMe = $this->gpCardObj;
 
-        return $chargeMe->charge($this->getAmount())
+        $chargeMe = $chargeMe->charge($this->getAmount())
             ->withAddress($this->gpBillingAddyObj)
             ->withCurrency($this->getCurrency())
             ->withDescription($this->getDescription())
             ->withClientTransactionId($this->getTransactionId())
-            ->withStoredCredential($this->gpStoredCredObj)
-            ->execute();
+            ->withStoredCredential($this->gpStoredCredObj);
+
+        if ($this->gpCommercialObj) {
+            $chargeMe->withCommercialRequest(true)
+                ->withCommercialData($this->gpCommercialObj);
+        }
+
+        return $chargeMe->execute();
     }
 }
