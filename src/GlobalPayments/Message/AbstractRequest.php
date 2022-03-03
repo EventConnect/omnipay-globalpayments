@@ -3,7 +3,10 @@
 namespace Omnipay\GlobalPayments\Message;
 
 use GlobalPayments\Api\Entities\Address;
+use GlobalPayments\Api\Entities\CommercialData;
+use GlobalPayments\Api\Entities\CommercialLineItem;
 use GlobalPayments\Api\Entities\Enums\StoredCredentialInitiator;
+use GlobalPayments\Api\Entities\Enums\TaxType;
 use GlobalPayments\Api\Entities\StoredCredential;
 use GlobalPayments\Api\PaymentMethods\CreditCardData;
 use Omnipay\GlobalPayments\CreditCard;
@@ -13,6 +16,7 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
     protected $gpBillingAddyObj;
     protected $gpCardObj;
     protected $gpStoredCredObj;
+    protected $gpCommercialObj;
 
     protected abstract function runTrans();
     protected abstract function setServicesConfig();
@@ -97,11 +101,33 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
         return $gpStoredCredObj;
     }
 
+    protected function getGpCommercialObj()
+    {
+        if (! $this->getItems()) {
+            return null;
+        }
+
+        $gpCommercialObj = new CommercialData(TaxType::NOT_USED);
+
+        foreach($this->getItems() as $omnipayItemObj) {
+            $gpCommercialItemObj = new CommercialLineItem();
+            $gpCommercialItemObj->name = $omnipayItemObj->getName();
+            $gpCommercialItemObj->description = $omnipayItemObj->getDescription();
+            $gpCommercialItemObj->quantity = $omnipayItemObj->getQuantity();
+            $gpCommercialItemObj->unitCost = $omnipayItemObj->getPrice();
+
+            $gpCommercialObj->addLineItems($gpCommercialItemObj);
+        }
+
+        return $gpCommercialObj;
+    }
+
     public function getData()
     {
         $this->gpBillingAddyObj = $this->getGpBillingAddyObj();
         $this->gpCardObj = $this->getGpCardObj();
         $this->gpStoredCredObj = $this->getGpStoredCredObj();
+        $this->gpCommercialObj = $this->getGpCommercialObj();
     }
 
     public function sendData($data)
