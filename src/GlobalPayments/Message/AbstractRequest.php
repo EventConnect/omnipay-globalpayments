@@ -5,6 +5,7 @@ namespace Omnipay\GlobalPayments\Message;
 use GlobalPayments\Api\Entities\Address;
 use GlobalPayments\Api\Entities\CommercialData;
 use GlobalPayments\Api\Entities\CommercialLineItem;
+use GlobalPayments\Api\Entities\Enum\CommercialIndicator;
 use GlobalPayments\Api\Entities\Enums\StoredCredentialInitiator;
 use GlobalPayments\Api\Entities\Enums\TaxType;
 use GlobalPayments\Api\Entities\StoredCredential;
@@ -107,7 +108,13 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
             return null;
         }
 
-        $gpCommercialObj = new CommercialData(TaxType::NOT_USED);
+        $commercialIndicator = $this->getCommercialIndicator();
+
+        if (empty($commercialIndicator)) {
+            $commercialIndicator = CommercialIndicator::LEVEL_II;
+        }
+
+        $gpCommercialObj = new CommercialData(TaxType::NOT_USED, $commercialIndicator);
 
         foreach($this->getItems() as $omnipayItemObj) {
             $gpCommercialItemObj = new CommercialLineItem();
@@ -183,5 +190,15 @@ abstract class AbstractRequest extends \Omnipay\Common\Message\AbstractRequest
     public function setGoodResponseCodes($value)
     {
         return $this->setParameter('goodResponseCodes', $value);
+    }
+
+    public function setCommercialIndicator($value)
+    {
+        return $this->setParameter('commercialIndicator', $value);
+    }
+
+    public function getCommercialIndicator()
+    {
+        return $this->getParameter('commercialIndicator');
     }
 }

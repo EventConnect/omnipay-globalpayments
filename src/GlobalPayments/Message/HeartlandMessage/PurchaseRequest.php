@@ -2,6 +2,8 @@
 
 namespace Omnipay\GlobalPayments\Message\HeartlandMessage;
 
+use GlobalPayments\Api\Entities\Enum\CommercialIndicator;
+
 class PurchaseRequest extends AbstractHeartlandRequest
 {
     public function runTrans()
@@ -18,7 +20,7 @@ class PurchaseRequest extends AbstractHeartlandRequest
             ->withStoredCredential($this->gpStoredCredObj);
 
         if ($this->gpCommercialObj) {
-            $chargeMe->withCommercialRequest(true)
+            $chargeMe->withCommercialRequest($this->getCommercialIndicator() == CommercialIndicator::LEVEL_II)
                 ->withCommercialData($this->gpCommercialObj);
         }
 
