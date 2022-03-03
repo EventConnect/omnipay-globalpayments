@@ -20,7 +20,12 @@ class PurchaseRequest extends AbstractHeartlandRequest
             ->withStoredCredential($this->gpStoredCredObj);
 
         if ($this->gpCommercialObj) {
-            $chargeMe->withCommercialRequest($this->getCommercialIndicator() == CommercialIndicator::LEVEL_II)
+            $commercialIndicator = $this->getCommercialIndicator();
+            if (empty($commercialIndicator)) {
+                $commercialIndicator = CommercialIndicator::LEVEL_II;
+            }
+
+            $chargeMe->withCommercialRequest($commercialIndicator == CommercialIndicator::LEVEL_II)
                 ->withCommercialData($this->gpCommercialObj);
         }
 
