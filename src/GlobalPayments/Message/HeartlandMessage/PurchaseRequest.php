@@ -2,7 +2,7 @@
 
 namespace Omnipay\GlobalPayments\Message\HeartlandMessage;
 
-use GlobalPayments\Api\Entities\Enum\CommercialIndicator;
+use GlobalPayments\Api\Entities\Enums\CommercialIndicator;
 
 class PurchaseRequest extends AbstractHeartlandRequest
 {

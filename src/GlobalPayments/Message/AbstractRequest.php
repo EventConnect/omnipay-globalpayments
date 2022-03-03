@@ -5,7 +5,7 @@ namespace Omnipay\GlobalPayments\Message;
 use GlobalPayments\Api\Entities\Address;
 use GlobalPayments\Api\Entities\CommercialData;
 use GlobalPayments\Api\Entities\CommercialLineItem;
-use GlobalPayments\Api\Entities\Enum\CommercialIndicator;
+use GlobalPayments\Api\Entities\Enums\CommercialIndicator;
 use GlobalPayments\Api\Entities\Enums\StoredCredentialInitiator;
 use GlobalPayments\Api\Entities\Enums\TaxType;
 use GlobalPayments\Api\Entities\StoredCredential;
